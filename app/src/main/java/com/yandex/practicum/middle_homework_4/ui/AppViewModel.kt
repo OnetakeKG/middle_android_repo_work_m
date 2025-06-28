@@ -6,6 +6,7 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.yandex.practicum.middle_homework_4.data.NewsRemoteMediator
@@ -27,20 +28,33 @@ class AppViewModel(
     private var pagingItems: LazyPagingItems<News>? = null
 
     @OptIn(ExperimentalPagingApi::class)
+    fun getNews(): Flow<PagingData<News>> = Pager(
+        config = PagingConfig(
+            pageSize = PAGE_SIZE,
+            enablePlaceholders = true,
+            prefetchDistance = PREFETCH_DISTANCE,
+            initialLoadSize = PAGE_SIZE),
+        remoteMediator = NewsRemoteMediator(
+            newsService = newsService,
+            newsDatabase = newsDatabase)
+    ) { newsDatabase.getNewsDao().getNews() }.flow.cachedIn(viewModelScope)
 
     fun attachPagingItems(paging: LazyPagingItems<News>?) {
         pagingItems = paging
-    }
-
-    fun detachPagingItems() {
         pagingItems = null
     }
 
+    fun refreshData() = pagingItems?.refresh()
 
+    fun launchPeriodicRefresh() = workManagerService.launchRefreshWork()
 
+    fun cancelPeriodicRefresh() = workManagerService.cancelRefreshWork()
 
+    fun saveSetting(periodic: Long, delayed: Long) = viewModelScope.launch {
+        dataStoreService.saveSetting(periodic, delayed)
     }
 
+    fun getCurrentSetting(): SettingContainer = dataStoreService.state.value
 
     companion object {
         const val PAGE_SIZE = 20
