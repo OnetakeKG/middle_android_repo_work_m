@@ -8,13 +8,12 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import androidx.paging.compose.LazyPagingItems
-import androidx.paging.compose.collectAsLazyPagingItems
 import com.yandex.practicum.middle_homework_4.data.NewsRemoteMediator
-import com.yandex.practicum.middle_homework_4.data.setting_repository.SettingContainer
 import com.yandex.practicum.middle_homework_4.data.database.NewsDatabase
 import com.yandex.practicum.middle_homework_4.data.database.entity.News
-import com.yandex.practicum.middle_homework_4.ui.contract.SettingsRepository
+import com.yandex.practicum.middle_homework_4.data.setting_repository.SettingContainer
 import com.yandex.practicum.middle_homework_4.ui.contract.NewsService
+import com.yandex.practicum.middle_homework_4.ui.contract.SettingsRepository
 import com.yandex.practicum.middle_homework_4.ui.contract.WorkManagerService
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
